@@ -38,7 +38,7 @@ const getUserById = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const updatedUser = await userService.updateUser(req.params.id, req.body);
+    const updatedUser = await userService.updateUser(parseInt(req.params.id), req.body);
     const { password: _pw, ...safe } = updatedUser;
     res.success(safe, "User updated successfully");
   } catch (error) {
@@ -48,7 +48,7 @@ const updateUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const result = await userService.deleteUser(req.params.id);
+    const result = await userService.deleteUser(parseInt(req.params.id));
     res.success(result, "User deleted successfully");
   } catch (error) {
     next(error);

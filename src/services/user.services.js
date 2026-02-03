@@ -29,6 +29,10 @@ async function loginUser(email, password) {
 }
 
 async function getUserById(id) {
+  id = Number(id);
+  if (!Number.isInteger(id)) {
+    throw new AppError("Invalid user id", 400);
+  }
   const user = await prisma.user.findUnique({
     where: { id },
   });
@@ -39,6 +43,10 @@ async function getUserById(id) {
 }
 
 async function updateUser(id, data) {
+  id = Number(id);
+  if (!Number.isInteger(id)) {
+    throw new AppError("Invalid user id", 400);
+  }
   const updateData = { ...data };
   if (data.password) {
     updateData.password = await bcrypt.hash(data.password, 10);
@@ -54,6 +62,10 @@ async function updateUser(id, data) {
 }
 
 async function deleteUser(id) {
+  id = Number(id);
+  if (!Number.isInteger(id)) {
+    throw new AppError("Invalid user id", 400);
+  }
   await prisma.user.delete({
     where: { id },
   });
