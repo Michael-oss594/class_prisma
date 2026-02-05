@@ -72,13 +72,33 @@ async function deleteUser(id) {
   return { message: "User deleted successfully" };
 }
 
-async function getAllUsers(page, pageSize) {
+async function getAllUsers(page, pageSize) { 
+  const cacheKey = `users:page:${page}:size:${pageSize}`;
+  // try to get from cache first
+  try {
+    const cached = await redisClient.get(cacheKey);
+    if (cached) {
+      console.log(`Cache hit for users page ${page}`);
+      return JSON.parse(cached);
+    } 
+  } catch (error) {
+    console.error("Cache error:", error);
+  }
+
   const users = await prisma.user.findMany({
     skip: (page - 1) * pageSize, 
     take: pageSize, 
   });
+
+  // Store in cache
+  try {
+    await redisClient.setEx(cacheKey,   CACHE_ITL, JSON.stringify(users)); // cache for 1 hour
+  } catch (error) {
+    console.error("Redis set error:", error);
+  }
   return users;
 }
+
 
 module.exports = {
   createUser,

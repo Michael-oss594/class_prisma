@@ -69,7 +69,7 @@ async function main() {
 
 main()
   .catch((error) => {
-    console.error("Error during seeding:", e);
+    console.error("Error during seeding:", error);
     process.exit(1);
   })
   .finally(async () => {
